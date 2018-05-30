@@ -31,7 +31,8 @@ class Board extends React.Component {
     for(let i = 0; i < 3; i++) {
       row = [];
       for(let j = 0; j < 3; j++) {
-        row.push(this.renderSquare(num, i, j)); // i(renderSquare의 매개변수) = num, row = i, col = j. num이 없으면 한칸 클릭시 한줄이 다 채워지고 i or j가 없으면 안넣으면 각각 undefined가 뜬다
+        row.push(this.renderSquare(num, i, j)); /* i(renderSquare의 매개변수) = num, row = i, col = j. num이 없으면 한칸 클릭시 한줄이 다 채
+						워지고 i or j가 없으면 안넣으면 각각 undefined가 뜬다 */
         num++;  //칸하나를 선택할 때 전체 다 선택되지 않기 위해 1씩 증가시켜준다
       }
       squares.push(<div key ={num} className="board-row">{row}</div>);
