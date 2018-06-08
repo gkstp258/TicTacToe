@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import _ from 'lodash';
 
-function Square(props) { //이긴 칸 배경색깔
+function Square(props) {  //이긴 칸 배경색깔
   const winningSquareStyle = {
     backgroundColor: '#ccc'
   };
 
-  return (	//이긴 칸의 배경색을 winningSquareStyle에서 가져온다
+  return (  //이긴 칸의 배경색을 winningSquareStyle에서 가져온다
     <button className="square" onClick={props.onClick} style={props.winningSquare ? winningSquareStyle : null}>
       {props.value}
     </button>
@@ -16,7 +17,7 @@ function Square(props) { //이긴 칸 배경색깔
 
 class Board extends React.Component {
   renderSquare(i, row, col) {
-    let winningSquare = this.props.winner && this.props.winner.includes(i) ? true : false; //승리자의 사각형을 표시해주기 위해 선언한 변수
+    let winningSquare = this.props.winner && this.props.winner.includes(i) ? true : false;  //승리자의 사각형을 표시해주기 위해 선언한 변수
     return (
       <Square
         key={i}
@@ -37,8 +38,8 @@ class Board extends React.Component {
     for(let i = 0; i < 3; i++) {
       row = [];
       for(let j = 0; j < 3; j++) {
-        row.push(this.renderSquare(num, i, j)); /* i(renderSquare의 매개변수) = num, row = i, col = j. num이 없으면 한칸 클릭시 한줄이 다 채
-	                                        워지고 i or j가 없으면 안넣으면 각각 undefined가 뜬다 */
+        row.push(this.renderSquare(num, i, j));  /* i(renderSquare의 매개변수) = num, row = i, col = j. num이 없으면 한칸 클릭시 한줄이 다 채워
+                                                  지고 i or j가 없으면 안넣으면 각각 undefined가 뜬다 */
         num++;  //칸하나를 선택할 때 전체 다 선택되지 않기 위해 1씩 증가시켜준다
       }
       squares.push(<div key ={num} className="board-row">{row}</div>);
@@ -57,33 +58,33 @@ class Game extends React.Component {
     this.state = {
       history: [
         {
-          squares: Array(9).fill(null)
+          squares: _.fill(Array(9),null)
         }
       ],
       stepNumber: 0,
-         xIsNext: true,
+      xIsNext: true,
       clicked: null,  //(row,col)형식으로 바꾸기 위한 변수
-      ascending: true  //오름차순 또는 내림차순으로 변경하기 위한 변수
+      ascending: true //오름차순 또는 내림차순으로 변경하기 위한 변수
     };
   }
 
   handleClick(i, row, col) {
     //.slice() 연산자를 쓴 이유는 squares 배열을 복사해 기본 배열과 새 배열을 비교하여 원할 때 변경할 수 있게 해주기 위해서이다
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const history = _.slice(this.state.history,0,this.state.stepNumber + 1);
     const current = history[history.length - 1];
-    const squares = current.squares.slice();
+    const squares = _.slice(current.squares);
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
       squares[i] = this.state.xIsNext ? "X" : "O";
       
     this.setState({
-      history: history.concat([
+      history: _.concat(history,
         {
                squares: squares,
                clicked: [row,col]
         }
-      ]),
+      ),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext
     });
@@ -139,7 +140,7 @@ class Game extends React.Component {
     }
 
     let status;
-    if (winner && winner !== 'draw') { //무승부가 아니라면 승자는 X 또는 O가 나옴
+    if (winner && winner !== 'draw') {  //무승부가 아니라면 승자는 X 또는 O가 나옴
       status = "Winner: " + (this.state.xIsNext ? "O" : "X");
     } else if (winner && winner === 'draw'){  //무승부라면 Match is draw 출력
       status = "Match is " + winner;
@@ -183,7 +184,7 @@ function calculateWinner(squares) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return { winner: squares[a], winningSquares: lines[i]};
-    } else if(!squares.includes(null)) {	//사각형에 null이 없으면 9칸이 다찬것이므로 무승부
+    } else if(!_.includes(squares, null)) {  //사각형에 null이 없으면 9칸이 다찬것이므로 무승부
       return 'draw';
     }
   }
